@@ -1,0 +1,228 @@
+
+class Fraction:
+    """Classe représentant une fraction et les opérations sur celle-ci.
+
+    Auteur : V. Van den Schrieck
+    Date : Octobre 2021
+    Cette classe permet la manipulation de fractions à travers plusieurs opérations.
+    """
+
+    def __init__(self, num=0, den=1):
+        """Initialise une fraction avec un numérateur et un dénominateur.
+
+        PRE: (`num` et `den` sont des entiers. `den` ne doit pas être zéro.)
+        POST : Initialise un objet Fraction avec le numérateur et le dénominateur fournis.
+        """
+
+        if den == 0 or not isinstance(den,int) or not isinstance(num,int):
+            raise ValueError("Les deux composants doivent être des entiers et le dénominateur ne peut pas être 0")
+        else:
+            self.num = int(num)
+            self.den = int(den)
+
+    @property
+    def numerator(self):
+        """Obtient le numérateur de la fraction.
+
+        PRE: Aucun
+        POST : Renvoie le numérateur de la fraction.
+        """
+        return self.num
+
+    @property
+    def denominator(self):
+        """Obtient le dénominateur de la fraction.
+
+        PRE: Aucun
+        POST : Renvoie le dénominateur de la fraction.
+        """
+        return self.den
+
+    def __str__(self):
+        """Renvoie une représentation textuelle de la forme réduite de la fraction.
+
+        PRE: Aucun
+        POST : Renvoie une chaîne représentant la forme réduite de la fraction.
+        """
+        if self.den == 0:
+            raise ZeroDivisionError("la division par 0 est impossible")
+        elif self.num == 0:
+            return f"{int(self.num/self.den)}"
+        else:
+            if self.num < 0:
+                return f"{(self.num//self.plus_grand_div_com(self.num,self.den))}/{abs(self.den//self.plus_grand_div_com(self.num,self.den))}"
+            else:
+                return f"{self.num//self.plus_grand_div_com(self.num,self.den)}/{self.den//self.plus_grand_div_com(self.num,self.den)}"
+
+    def as_mixed_number(self):
+        """Renvoie une représentation textuelle de la forme réduite de la fraction sous forme de nombre mixte.
+
+        Un nombre mixte est la somme d'un entier et d'une fraction.
+
+        PRE: Aucun
+        POST : Renvoie une chaîne représentant le nombre mixte.
+        """
+        partie_entiere = self.num // self.den
+        reste = self.num % self.den
+        if reste == 0:
+            return str(partie_entiere)
+        else:
+            return f"{partie_entiere} {reste}/{self.den}"
+
+    def __add__(self, autre):
+        """Surcharge de l'opérateur + pour les fractions.
+
+            PRE: `autre` est un objet Fraction.
+            POST : Renvoie un nouvel objet Fraction représentant la somme de self et autre.
+            """
+        num1 = self.num*autre.den #numérateur a*d
+        num2 = autre.num*self.den #numérateur c*b
+        den_commun = self.den*autre.den #dénominateur commun b*d
+        num_somme = num1+num2 # numérateur de la somme a*d+c*b
+        return Fraction(num_somme, den_commun)
+
+    def __sub__(self, autre):
+        """Surcharge de l'opérateur - pour les fractions.
+
+        PRE: `autre` est un objet Fraction.
+        POST : Renvoie un nouvel objet Fraction représentant la différence entre self et autre.
+        """
+        num1 = self.num*autre.den #numérateur a*d
+        num2 = autre.num*self.den #numérateur c*b
+        den_commun = self.den*autre.den #dénominateur commun b*d
+        num_soustraction = num1-num2 # numérateur de la soustraction a*d-c*b
+        return Fraction(num_soustraction, den_commun)
+
+    def __mul__(self, autre):
+        """Surcharge de l'opérateur * pour les fractions.
+
+        PRE: `autre` est un objet Fraction.
+        POST : Renvoie un nouvel objet Fraction représentant le produit de self et autre.
+        """
+        nouveau_num = self.num * autre.num
+        nouveau_den = self.den * autre.den
+        return Fraction(nouveau_num, nouveau_den)
+
+    def __truediv__(self, autre):
+        """Surcharge de l'opérateur / pour les fractions.
+
+        PRE: `autre` est un objet Fraction. `autre` ne doit pas être zéro.
+        POST : Renvoie un nouvel objet Fraction représentant la division de self par autre.
+        """
+        if autre.num == 0:
+            raise ValueError("division par 0 impossible")
+        nouveau_num = self.num * autre.den
+        nouveau_den = self.den * autre.num
+        return Fraction(nouveau_num, nouveau_den)
+
+    def __pow__(self, autre):
+        """Surcharge de l'opérateur ** pour les fractions.
+
+        PRE: `autre` un objet Fraction.
+        POST : Renvoie un nouvel objet Fraction représentant self élevé à la puissance autre.
+        """
+        new_num = self.num ** autre.num
+        new_den = self.den ** autre.num
+
+        return Fraction(new_num, new_den)
+
+    def __eq__(self, autre):
+        """Surcharge de l'opérateur == pour les fractions.
+
+        PRE: `autre` est un objet Fraction.
+        POST : Renvoie True si self est égal à autre, False sinon.
+        """
+        return self.num * autre.den == autre.num * self.den
+
+    def __float__(self):
+        """Renvoie la valeur décimale de la fraction.
+
+        PRE: Aucun
+        POST : Renvoie un float représentant la valeur décimale de la fraction.
+        """
+        return self.num / self.den
+
+    def is_zero(self):
+        """Vérifie si la valeur de la fraction est 0.
+
+        PRE: Aucun
+        POST : Renvoie True si la fraction représente 0, False sinon.
+        """
+        return self.num / self.den == 0
+
+    def is_integer(self):
+        """Vérifie si une fraction est un entier (ex : 8/4, 3, 2/2, ...).
+
+        PRE: Aucun
+        POST : Renvoie True si la fraction est un entier, False sinon.
+        """
+        nbr = self.num / self.den
+        try:
+            float(nbr)
+        except ValueError:
+            return False
+        else:
+            return float(nbr).is_integer()
+
+    def is_proper(self):
+        """Vérifie si la valeur absolue de la fraction est < 1.
+
+        PRE: Aucun
+        POST : Renvoie True si la fraction est une fraction propre, False sinon.
+        """
+        return abs(self.num) < abs(self.den)
+
+    def is_unit(self):
+        """Vérifie si le numérateur de la fraction est 1 dans sa forme réduite.
+
+        PRE: Aucun
+        POST : Renvoie True si la fraction est une fraction unitaire, False sinon.
+        """
+        return self.num == 1
+
+    def is_adjacent_to(self, autre):
+        """Vérifie si deux fractions diffèrent d'une fraction unitaire.
+
+        Deux fractions sont adjacentes si la valeur absolue de leur différence est une fraction.
+
+        PRE: `autre` est un objet Fraction.
+        POST : Renvoie True si les fractions sont adjacentes, False sinon.
+        """
+        return abs(self.num * autre.den - autre.num * self.den) == 1
+    
+    def plus_grand_div_com(self,a,b):
+        """Va trouver le plus grand diviseur commun pour a et b.
+
+        Nous permettra de trouver la plus petite forme d'un fraction en divisant le numérateur et le dénominateur par le pgcd des deux
+
+        PRE: -
+        POST : Renvoie le plus grand diviseur commun pour a et b.
+        """
+        d = abs(a)
+        while (a%d != 0 or b%d !=0):
+            d = d - 1
+        return d
+
+# test1 = Fraction(3,3)
+# print(test1)
+# print(test1.is_proper())
+
+
+#Test addition et soustraction et multiplication de fraction
+test1 = Fraction(1,2)
+test2 = Fraction(2,2)
+test1.is_adjacent_to(test2)
+#print(nouvelle_fraction)
+
+#debugage de la fonction soustraction
+#le programme plante à chaque fois que ma total est une fraction négative
+#Comment faire ?
+#Mettre des prints à la fin des fonctions utilisées pour voir à quel niveau le programme plante
+#Solution rajouter un condition si le numérateur est négatif dans la fonction __str__
+#et rajoute la valeur absolue de a dans la fonction le + grand diviseur commun
+
+
+#lien utilisé :
+# https://www.developpez.net/forums/d1504047/autres-langages/python/general-python/appel-d-fonction-fonction-d-meme-classe/
+# https://www.codingame.com/playgrounds/56931/les-bases-de-python-pour-le-lycee/2--les-classes#:~:text=Pour%20cela%2C%20on%20sait%20que,%C3%A9crivant%20from%20math%20import%20gcd%20.
+# https://www.tresfacile.net/solution-exercice-49-pgcd-ppcm-en-python/
