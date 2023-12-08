@@ -54,6 +54,7 @@ class Fraction:
             else:
                 return f"{self.num//self.plus_grand_div_com(self.num,self.den)}/{self.den//self.plus_grand_div_com(self.num,self.den)}"
 
+    @property
     def as_mixed_number(self):
         """Renvoie une représentation textuelle de la forme réduite de la fraction sous forme de nombre mixte.
 
@@ -62,12 +63,19 @@ class Fraction:
         PRE: Aucun
         POST : Renvoie une chaîne représentant le nombre mixte.
         """
-        partie_entiere = self.num // self.den
+
+        partie_entiere = int(self.num / self.den)
         reste = self.num % self.den
         if reste == 0:
-            return str(partie_entiere)
+            if self.num < 0:
+                return str(f"-{partie_entiere}")
+            else:
+                return str(partie_entiere)
         else:
-            return f"{partie_entiere} {reste}/{self.den}"
+            if self.num < 0:
+                return f"{partie_entiere} -{reste}/{self.den}"
+            else:
+                return f"{partie_entiere} {reste}/{self.den}"
 
     def __add__(self, autre):
         """Surcharge de l'opérateur + pour les fractions.
@@ -134,6 +142,7 @@ class Fraction:
         """
         return self.num * autre.den == autre.num * self.den
 
+    @property
     def __float__(self):
         """Renvoie la valeur décimale de la fraction.
 
@@ -142,6 +151,7 @@ class Fraction:
         """
         return self.num / self.den
 
+    @property
     def is_zero(self):
         """Vérifie si la valeur de la fraction est 0.
 
@@ -150,6 +160,7 @@ class Fraction:
         """
         return self.num / self.den == 0
 
+    @property
     def is_integer(self):
         """Vérifie si une fraction est un entier (ex : 8/4, 3, 2/2, ...).
 
@@ -164,6 +175,7 @@ class Fraction:
         else:
             return float(nbr).is_integer()
 
+    @property
     def is_proper(self):
         """Vérifie si la valeur absolue de la fraction est < 1.
 
@@ -172,6 +184,7 @@ class Fraction:
         """
         return abs(self.num) < abs(self.den)
 
+    @property
     def is_unit(self):
         """Vérifie si le numérateur de la fraction est 1 dans sa forme réduite.
 
@@ -202,27 +215,3 @@ class Fraction:
         while (a%d != 0 or b%d !=0):
             d = d - 1
         return d
-
-# test1 = Fraction(3,3)
-# print(test1)
-# print(test1.is_proper())
-
-
-#Test addition et soustraction et multiplication de fraction
-test1 = Fraction(1,2)
-test2 = Fraction(2,2)
-test1.is_adjacent_to(test2)
-#print(nouvelle_fraction)
-
-#debugage de la fonction soustraction
-#le programme plante à chaque fois que ma total est une fraction négative
-#Comment faire ?
-#Mettre des prints à la fin des fonctions utilisées pour voir à quel niveau le programme plante
-#Solution rajouter un condition si le numérateur est négatif dans la fonction __str__
-#et rajoute la valeur absolue de a dans la fonction le + grand diviseur commun
-
-
-#lien utilisé :
-# https://www.developpez.net/forums/d1504047/autres-langages/python/general-python/appel-d-fonction-fonction-d-meme-classe/
-# https://www.codingame.com/playgrounds/56931/les-bases-de-python-pour-le-lycee/2--les-classes#:~:text=Pour%20cela%2C%20on%20sait%20que,%C3%A9crivant%20from%20math%20import%20gcd%20.
-# https://www.tresfacile.net/solution-exercice-49-pgcd-ppcm-en-python/
