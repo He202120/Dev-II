@@ -10,22 +10,28 @@ class Fraction:
     def __init__(self, num=0, den=1):
         """Initialise une fraction avec un numérateur et un dénominateur.
 
-        PRE: (`num` et `den` sont des entiers. `den` ne doit pas être zéro.)
+        PRE: -
         POST : Initialise un objet Fraction avec le numérateur et le dénominateur fournis.
         """
 
-        if den == 0 or not isinstance(den,int) or not isinstance(num,int):
+        if den == 0 or not isinstance(den, int) or not isinstance(num, int):
             raise ValueError("Les deux composants doivent être des entiers et le dénominateur ne peut pas être 0")
         else:
-            self.num = int(num)
-            self.den = int(den)
+            if den < 0:
+                self.num = int(num * -1)
+                self.den = abs(den)
+            else:
+                self.num = int(num)
+                self.den = int(den)
+        if not isinstance(self.num, int) or not isinstance(self.den, int):
+            raise ValueError("Les deux composants doivent être des entiers et le dénominateur ne peut pas être 0")
 
     @property
     def numerator(self):
         """Obtient le numérateur de la fraction.
 
         PRE: Aucun
-        POST : Renvoie le numérateur de la fraction de l'objet courant.
+        POST : Renvoie le numérateur de la fraction.
         """
         return self.num
 
@@ -34,7 +40,7 @@ class Fraction:
         """Obtient le dénominateur de la fraction.
 
         PRE: Aucun
-        POST : Renvoie le dénominateur de la fraction de l'objet courant.
+        POST : Renvoie le dénominateur de la fraction.
         """
         return self.den
 
@@ -42,17 +48,17 @@ class Fraction:
         """Renvoie une représentation textuelle de la forme réduite de la fraction.
 
         PRE: Aucun
-        POST : Renvoie une chaîne représentant la forme réduite de la fraction de l'objet courant.
+        POST : Renvoie une chaîne représentant la forme réduite de la fraction.
         """
         if self.den == 0:
             raise ZeroDivisionError("la division par 0 est impossible")
         elif self.num == 0:
-            return f"{int(self.num/self.den)}"
+            return f"{int(self.num / self.den)}"
         else:
             if self.num < 0:
-                return f"{(self.num//self.plus_grand_div_com(self.num,self.den))}/{abs(self.den//self.plus_grand_div_com(self.num,self.den))}"
+                return f"{(self.num // self.plus_grand_div_com(self.num, self.den))}/{abs(self.den // self.plus_grand_div_com(self.num, self.den))}"
             else:
-                return f"{self.num//self.plus_grand_div_com(self.num,self.den)}/{self.den//self.plus_grand_div_com(self.num,self.den)}"
+                return f"{self.num // self.plus_grand_div_com(self.num, self.den)}/{self.den // self.plus_grand_div_com(self.num, self.den)}"
 
     @property
     def as_mixed_number(self):
@@ -61,14 +67,19 @@ class Fraction:
         Un nombre mixte est la somme d'un entier et d'une fraction.
 
         PRE: Aucun
-        POST : Renvoie une chaîne représentant le nombre mixte de l'objet courant.
+        POST : Renvoie une chaîne représentant le nombre mixte.
         """
+        try:
+            partie_entiere = int(self.num / self.den)
+        except ZeroDivisionError:
+            return "la division par 0 est impossible"
+        except TypeError:
+            return "la valeur renseigné n'est pas un entier"
 
-        partie_entiere = int(self.num / self.den)
         reste = self.num % self.den
         if reste == 0:
             if self.num < 0:
-                return str(f"-{partie_entiere}")
+                return str(f"{partie_entiere}")
             else:
                 return str(partie_entiere)
         else:
@@ -81,31 +92,31 @@ class Fraction:
         """Surcharge de l'opérateur + pour les fractions.
 
             PRE: `autre` est un objet Fraction.
-            POST : Renvoie un nouvel objet Fraction représentant la somme de self (objet Fraction) et autre (objet Fraction).
+            POST : Renvoie un nouvel objet Fraction représentant la somme de self et autre.
             """
-        num1 = self.num*autre.den #numérateur a*d
-        num2 = autre.num*self.den #numérateur c*b
-        den_commun = self.den*autre.den #dénominateur commun b*d
-        num_somme = num1+num2 # numérateur de la somme a*d+c*b
+        num1 = self.num * autre.den  # numérateur a*d
+        num2 = autre.num * self.den  # numérateur c*b
+        den_commun = self.den * autre.den  # dénominateur commun b*d
+        num_somme = num1 + num2  # numérateur de la somme a*d+c*b
         return Fraction(num_somme, den_commun)
 
     def __sub__(self, autre):
         """Surcharge de l'opérateur - pour les fractions.
 
         PRE: `autre` est un objet Fraction.
-        POST : Renvoie un nouvel objet Fraction représentant la différence entre self (objet Fraction) et autre (objet Fraction).
+        POST : Renvoie un nouvel objet Fraction représentant la différence entre self et autre.
         """
-        num1 = self.num*autre.den #numérateur a*d
-        num2 = autre.num*self.den #numérateur c*b
-        den_commun = self.den*autre.den #dénominateur commun b*d
-        num_soustraction = num1-num2 # numérateur de la soustraction a*d-c*b
+        num1 = self.num * autre.den  # numérateur a*d
+        num2 = autre.num * self.den  # numérateur c*b
+        den_commun = self.den * autre.den  # dénominateur commun b*d
+        num_soustraction = num1 - num2  # numérateur de la soustraction a*d-c*b
         return Fraction(num_soustraction, den_commun)
 
     def __mul__(self, autre):
         """Surcharge de l'opérateur * pour les fractions.
 
         PRE: `autre` est un objet Fraction.
-        POST : Renvoie un nouvel objet Fraction représentant le produit de self (objet Fraction) et autre (objet Fraction).
+        POST : Renvoie un nouvel objet Fraction représentant le produit de self et autre.
         """
         nouveau_num = self.num * autre.num
         nouveau_den = self.den * autre.den
@@ -114,11 +125,11 @@ class Fraction:
     def __truediv__(self, autre):
         """Surcharge de l'opérateur / pour les fractions.
 
-        PRE: `autre` est un objet Fraction. `autre` ne doit pas être zéro.
-        POST : Renvoie un nouvel objet Fraction représentant la division de self (objet Fraction) par autre (objet Fraction).
+        PRE: `autre` est un objet Fraction.
+        POST : Renvoie un nouvel objet Fraction représentant la division de self par autre.
         """
         if autre.num == 0:
-            raise ValueError("division par 0 impossible")
+            raise ZeroDivisionError("division par 0 impossible")
         nouveau_num = self.num * autre.den
         nouveau_den = self.den * autre.num
         return Fraction(nouveau_num, nouveau_den)
@@ -127,7 +138,7 @@ class Fraction:
         """Surcharge de l'opérateur ** pour les fractions.
 
         PRE: `autre` un objet Fraction.
-        POST : Renvoie un nouvel objet Fraction représentant self (objet Fraction) élevé à la puissance autre (objet Fraction).
+        POST : Renvoie un nouvel objet Fraction représentant self élevé à la puissance autre.
         """
         new_num = self.num ** autre.num
         new_den = self.den ** autre.num
@@ -142,7 +153,6 @@ class Fraction:
         """
         return self.num * autre.den == autre.num * self.den
 
-    @property
     def __float__(self):
         """Renvoie la valeur décimale de la fraction.
 
@@ -169,11 +179,11 @@ class Fraction:
         """
         nbr = self.num / self.den
         try:
-            float(nbr)
+            isinstance(nbr,int)
         except ValueError:
             return False
         else:
-            return float(nbr).is_integer()
+            return nbr.is_integer()
 
     @property
     def is_proper(self):
@@ -201,9 +211,9 @@ class Fraction:
         PRE: `autre` est un objet Fraction.
         POST : Renvoie True si les fractions sont adjacentes, False sinon.
         """
-        return abs(self.num * autre.den - autre.num * self.den) == 1
-    
-    def plus_grand_div_com(self,a,b):
+        return abs(self.num * autre.den - autre.num * self.den) != 1
+
+    def plus_grand_div_com(self, a, b):
         """Va trouver le plus grand diviseur commun pour a et b.
 
         Nous permettra de trouver la plus petite forme d'un fraction en divisant le numérateur et le dénominateur par le pgcd des deux
@@ -212,6 +222,16 @@ class Fraction:
         POST : Renvoie le plus grand diviseur commun pour a et b.
         """
         d = abs(a)
-        while (a%d != 0 or b%d !=0):
+        while (a % d != 0 or b % d != 0):
             d = d - 1
         return d
+
+
+
+la = Fraction(2,2)
+print(la)
+print(la.is_integer)
+
+
+
+
