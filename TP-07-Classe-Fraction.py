@@ -12,6 +12,7 @@ class Fraction:
 
         PRE: -
         POST : Initialise un objet Fraction avec le numérateur et le dénominateur fournis.
+        RAISES : ValueError si les un des deux attributs den ou num n'est pas un entier ou si le den vaut 0
         """
 
         if den == 0 or not isinstance(den, int) or not isinstance(num, int):
@@ -125,8 +126,9 @@ class Fraction:
     def __truediv__(self, autre):
         """Surcharge de l'opérateur / pour les fractions.
 
-        PRE: `autre` est un objet Fraction.
+        PRE: `autre` est un objet de la classe Fraction.
         POST : Renvoie un nouvel objet Fraction représentant la division de self par autre.
+        RAISES : ZeroDivisionError si le numérateur de l'autre objet vaut 0
         """
         if autre.num == 0:
             raise ZeroDivisionError("division par 0 impossible")
@@ -178,12 +180,8 @@ class Fraction:
         POST : Renvoie True si la fraction est un entier, False sinon.
         """
         nbr = self.num / self.den
-        try:
-            isinstance(nbr,int)
-        except ValueError:
-            return False
-        else:
-            return nbr.is_integer()
+        return isinstance(nbr,int)
+
 
     @property
     def is_proper(self):
