@@ -180,7 +180,7 @@ class Fraction:
         POST : Renvoie True si la fraction est un entier, False sinon.
         """
         nbr = self.num / self.den
-        return isinstance(nbr,int)
+        return nbr.is_integer()
 
 
     @property
