@@ -1,6 +1,7 @@
 import unittest
 from tp9 import Fraction
 
+
 class TestFractionMethods(unittest.TestCase):
 
     def test_creation(self):
@@ -10,9 +11,9 @@ class TestFractionMethods(unittest.TestCase):
         frac2 = Fraction(-1,2)
         self.assertEqual(frac2.numerator, -1,"Test négatif : numérateur")
         self.assertEqual(frac2.denominator, 2,"Test négatif : dénominateur")
-        self.assertRaises(ValueError, Fraction, 2.2, 2)
-        self.assertRaises(ValueError, Fraction, "", 2)
-        self.assertRaises(ValueError, Fraction, 3, 0)
+        self.assertRaises(ZeroDivisionError, Fraction, 2.2, 2)
+        self.assertRaises(ZeroDivisionError, Fraction, "", 2)
+        self.assertRaises(ZeroDivisionError, Fraction, 3, 0)
 
     def test_str_representation(self):
         frac = Fraction(3, 4)
@@ -21,8 +22,10 @@ class TestFractionMethods(unittest.TestCase):
         self.assertEqual(str(frac2), '2/1',"Test simplification : 8/4 ")
         frac3 = Fraction(-8, 4)
         self.assertEqual(str(frac3), '-2/1',"Test simplification négatif : -8/4 ")
-        self.assertRaises(ValueError, Fraction, 3, 0)
-        self.assertRaises(ValueError, Fraction, 3, "aa")
+        frac4 = Fraction(0, 4)
+        self.assertEqual(str(frac4), '0', "Test simplification négatif : -8/4 ")
+        self.assertRaises(ZeroDivisionError, Fraction, 3, 0)
+        self.assertRaises(ZeroDivisionError, Fraction, 3, "aa")
 
     def test_mixed_number_representation(self):
         frac = Fraction(1, 2)
@@ -31,8 +34,11 @@ class TestFractionMethods(unittest.TestCase):
         self.assertEqual(frac2.as_mixed_number, '2 1/2',"Test simplification : 5/2")
         frac3 = Fraction(-5, 2)
         self.assertEqual(frac3.as_mixed_number, '-2 -1/2',"Test simplification négatif : -5/2")
-        self.assertRaises(ValueError, Fraction, 3, 0)
-        self.assertRaises(ValueError, Fraction, 3, "aa")
+        frac4 = Fraction(4, 2)
+        self.assertEqual(frac4.as_mixed_number, '2', "Test simplification négatif : -5/2")
+        frac5 = Fraction(-4, 2)
+        self.assertEqual(frac5.as_mixed_number, '-2', "Test simplification négatif : -5/2")
+
 
     def test_addition(self):
         frac1 = Fraction(1, 2)
@@ -47,8 +53,8 @@ class TestFractionMethods(unittest.TestCase):
         self.assertEqual(result2.numerator, -6,"Test addition négatif : -4/2+1/2")
         self.assertEqual(result2.denominator, 4,"Test addition négatif : -4/2+1/2")
         self.assertEqual(str(result2), '-3/2',"Test négatif : -6/4 ")
-        self.assertRaises(ValueError, Fraction, 3, 0)
-        self.assertRaises(ValueError, Fraction, 3, "aa")
+        self.assertRaises(ZeroDivisionError, Fraction, 3, 0)
+        self.assertRaises(ZeroDivisionError, Fraction, 3, "aa")
 
     def test_division(self):
         frac1 = Fraction(1, 2)
@@ -103,6 +109,10 @@ class TestFractionMethods(unittest.TestCase):
         frac3 = Fraction(-1, 2)
         frac4 = Fraction(1, 2)
         self.assertTrue(frac3.is_adjacent_to(frac4),"Test adjacent avec négatif: -1/2 is adjacent 1/2")
+
+    def test_float_check(self):
+        frac1 = Fraction(1, 2)
+        self.assertEqual(float(frac1), 0.5,"Test float avec : 1/2 is adjacent 1/2")
 
 if __name__ == '__main__':
     unittest.main()
