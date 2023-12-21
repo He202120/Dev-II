@@ -15,7 +15,7 @@ class Fraction:
         """
 
         if den == 0 or not isinstance(den, int) or not isinstance(num, int):
-            raise ValueError("Les deux composants doivent être des entiers et le dénominateur ne peut pas être 0")
+            raise ZeroDivisionError("Les deux composants doivent être des entiers et le dénominateur ne peut pas être 0")
         else:
             if den < 0:
                 self.num = int(num * -1)
@@ -23,23 +23,22 @@ class Fraction:
             else:
                 self.num = int(num)
                 self.den = int(den)
-        if not isinstance(self.num, int) or not isinstance(self.den, int):
-            raise ValueError("Les deux composants doivent être des entiers et le dénominateur ne peut pas être 0")
 
     @property
     def numerator(self):
         """Obtient le numérateur de la fraction.
 
-        PRE: Aucun
+        PRE : Aucun
         POST : Renvoie le numérateur de la fraction.
         """
+
         return self.num
 
     @property
     def denominator(self):
         """Obtient le dénominateur de la fraction.
 
-        PRE: Aucun
+        PRE : Aucun
         POST : Renvoie le dénominateur de la fraction.
         """
         return self.den
@@ -47,12 +46,11 @@ class Fraction:
     def __str__(self):
         """Renvoie une représentation textuelle de la forme réduite de la fraction.
 
-        PRE: Aucun
+        PRE : Aucun
         POST : Renvoie une chaîne représentant la forme réduite de la fraction.
         """
-        if self.den == 0:
-            raise ZeroDivisionError("la division par 0 est impossible")
-        elif self.num == 0:
+
+        if self.num == 0:
             return f"{int(self.num / self.den)}"
         else:
             if self.num < 0:
@@ -69,12 +67,8 @@ class Fraction:
         PRE: Aucun
         POST : Renvoie une chaîne représentant le nombre mixte.
         """
-        try:
-            partie_entiere = int(self.num / self.den)
-        except ZeroDivisionError:
-            return "la division par 0 est impossible"
-        except TypeError:
-            return "la valeur renseigné n'est pas un entier"
+
+        partie_entiere = int(self.num / self.den)
 
         reste = self.num % self.den
         if reste == 0:
@@ -148,7 +142,7 @@ class Fraction:
     def __eq__(self, autre):
         """Surcharge de l'opérateur == pour les fractions.
 
-        PRE: `autre` est un objet Fraction.
+        PRE : `autre` est un objet Fraction.
         POST : Renvoie True si self est égal à autre, False sinon.
         """
         return self.num * autre.den == autre.num * self.den
